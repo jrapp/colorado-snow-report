@@ -34,13 +34,22 @@ class ColoradoSnowReport:
 
     def Breckenridge(self):
         self.driver.get('http://www.breckenridge.com/mountain/snow-and-weather-report.aspx')
-        snowfall = self.driver.find_element_by_class_name('snowfalldata')
-        print(snowfall)
+        temp = self.driver.find_element_by_class_name('snowReportPage')
+        temp = temp.find_element_by_class_name('snowBorder')
+        temp = temp.find_element_by_id('snowReport')
+        temp = temp.find_element_by_class_name('snowReportData')
+        temp = temp.find_element_by_class_name('snowReportDataColumn1')
+        temp = temp.find_element_by_class_name('snowfallData')
+        temp = temp.text.split(' ')
+        logging.debug('Breck reported' + temp[0])
+        self.post_to_table('Breckenridge', temp[0])
+        logging.debug('Posted Breckenridge data to Snow Report Table')
 
 if __name__ == "__main__":
     #Call the constructor
     csr = ColoradoSnowReport()
     #Call the functions for the individual resorts
     csr.Breckenridge()
+    csr.driver.close()
 
 
