@@ -132,14 +132,58 @@ class ColoradoSnowReport:
             logging.error(str(e))
         logging.debug('Success posting a-basin to dynamodb')
 
+    def Copper(self):
+        snowfall = 'nr'
+        try:
+            self.driver.get('http://www.coppercolorado.com/winter/the_mountain/dom/snow.html')
+            temp = self.driver.find_element_by_id('report-page-conditions-snow')
+            temp = temp.find_elements_by_tag_name('tr')
+            temp = temp[2].find_elements_by_tag_name('td')
+            temp = temp[0].text.split('.')
+            snowfall = temp[0]
+            logging.debug('Copper reported ' + snowfall)
+        except Exception as e:
+            logging.error('Error getting Copper data')
+            logging.error(str(e))
+            snowfall = 'error'
+        try:
+            self.post_to_table('Copper',snowfall)
+            logging.debug('Success posting copper to dynamodb')
+        except Exception as e:
+            logging.error('Error posting to dynamodb')
+            logging.error(str(e))
+
+
+    def WinterPark(self):
+        snowfall = 'nr'
+        try:
+            self.driver.get('https://www.winterparkresort.com/the-mountain/weather-dashboard')
+            temp = self.driver.find_element_by_class_name('recent-snowfall')
+            temp = temp.find_elements_by_class_name('data-point')
+            temp = re.search(r'\d+',temp[1].text).group()
+            snowfall = temp
+        except Exception as e:
+            logging.error('Error getting Winter Park data')
+            logging.error(str(e))
+            snowfall = 'error'
+        try:
+            self.post_to_table('Winter Park',snowfall)
+            logging.debug('Success posting Winter Park to DynamoDB')
+        except Exception as e:
+            logging.error('Error posting to DynamoDB')
+            logging.error(str(e))
+
+
 if __name__ == "__main__":
     #Call the constructor
     csr = ColoradoSnowReport()
     #Call the functions for the individual resorts
     #csr.Breckenridge()
-    csr.A_Basin()
+    #csr.A_Basin()
     #csr.Keystone()
     #csr.Vail()
+    #csr.Copper()
+    csr.WinterPark()
     csr.driver.close()
 
 
