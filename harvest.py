@@ -11,7 +11,7 @@ import re
 class ColoradoSnowReport:
     def __init__(self):
         #initialize the logger
-        logging.basicConfig(filename='snow-report.log',level=logging.DEBUG)
+        logging.basicConfig(filename='snow-report.log',level=logging.INFO)
 
         #Initialize the web driver
         self.display = Display(visible=0, size=(800,600))
@@ -178,12 +178,13 @@ if __name__ == "__main__":
     #Call the constructor
     csr = ColoradoSnowReport()
     #Call the functions for the individual resorts
-    #csr.Breckenridge()
-    #csr.A_Basin()
-    #csr.Keystone()
-    #csr.Vail()
-    #csr.Copper()
+    csr.Breckenridge()
+    csr.A_Basin()
+    csr.Keystone()
+    csr.Vail()
+    csr.Copper()
     csr.WinterPark()
+    #Close the chrome driver
     csr.driver.close()
 
 
