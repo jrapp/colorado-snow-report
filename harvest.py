@@ -174,6 +174,47 @@ class ColoradoSnowReport:
             logging.error(str(e))
 
 
+    def Steamboat(self):
+        snowfall = 'nr'
+        try:
+            self.driver.get('https://www.steamboat.com/the-mountain/conditions-report')
+            temp = self.driver.find_element_by_class_name('recent-snowfall')
+            temp = temp.find_elements_by_class_name('data-point')
+            temp = re.search(r'\d+',temp[1].text).group()
+            snowfall = temp
+        except Exception as e:
+            logging.error('Error getting Steamboat data')
+            logging.error(str(e))
+            snowfall = 'error'
+        try:
+            self.post_to_table('Steamboat',snowfall)
+            logging.debug('Success posting Steamboat to DynamoDB')
+        except Exception as e:
+            logging.error('Error posting Steamboat data to DynamoDB')
+            logging.error(str(e))
+
+    def Eldora(self):
+        snowfall = 'nr'
+        try:
+            self.driver.get('https://www.eldora.com/the-mountain/snow-grooming-report/')
+            temp = self.driver.find_element_by_id('h-snowfall-data-24')
+            temp = temp.find_element_by_class_name('h-weather-small-text')
+            temp = re.search(r'\d+',temp.text).group()
+            snowfall = temp
+        except Exception as e:
+            logging.error('Error getting Eldora data')
+            logging.error(str(e))
+            snowfall = 'error'
+        try:
+            self.post_to_table('Eldora',snowfall)
+            logging.debug('Sucess posting Eldora to DynamoDB')
+        except Exception as e:
+            logging.error('Error posting Eldora data to DynamoDB')
+            logging.error(str(e))
+
+
+
+
 if __name__ == "__main__":
     #Call the constructor
     csr = ColoradoSnowReport()
@@ -184,6 +225,8 @@ if __name__ == "__main__":
     csr.Vail()
     csr.Copper()
     csr.WinterPark()
+    csr.Steamboat()
+    csr.Eldora()
     #Close the chrome driver
     csr.driver.close()
 
