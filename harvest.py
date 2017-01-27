@@ -48,12 +48,14 @@ class ColoradoSnowReport:
             logging.debug('Breck reported' + temp[0])
             snowfall = temp[0]
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error obtaining Breckenridge data')
             logging.error(str(e))
             snowfall = 'error'
         try:
             self.post_to_table('Breckenridge', snowfall)
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error(str(e))
             logging.error('could not post data to dynamodb')
 
@@ -79,9 +81,10 @@ class ColoradoSnowReport:
         try:
             self.post_to_table('Keystone', snowfall)
         except Exception as e:
-            logging.error('could not post data to dynamodb')
+            logging.error(date.today().isoformat())
+            logging.error('could not post keystone data to dynamodb')
             logging.error(str(e))
-        logging.debug('Sucess posting keystone to dynamodb')
+        logging.debug('Success posting keystone to dynamodb')
 
     def Vail(self):
         snowfall = 'nr'
@@ -97,15 +100,16 @@ class ColoradoSnowReport:
             logging.debug('Vail reported ' + temp[0]);
             snowfall = temp[0]
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error obtaining Vail data')
             logging.error(str(e))
             snowfall = 'error'
         try:
             self.post_to_table('Vail', snowfall)
         except Exception as e:
-            logging.error('could not post data to dynamodb')
+            logging.error('could not post vail data to dynamodb')
             logging.error(str(e))
-        logging.debug('Sucess posting vail to dynamodb')
+        logging.debug('Success posting vail to dynamodb')
 
 
     def A_Basin(self):
@@ -122,12 +126,14 @@ class ColoradoSnowReport:
             logging.debug('A-Basin reported ' + temp[0])
             snowfall = temp[0]
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error getting A-Basin data')
             logging.error(str(e))
             snowfall = 'error'
         try:
             self.post_to_table('A-Basin', snowfall)
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error posting to dynamodb')
             logging.error(str(e))
         logging.debug('Success posting a-basin to dynamodb')
@@ -143,6 +149,7 @@ class ColoradoSnowReport:
             snowfall = temp[0]
             logging.debug('Copper reported ' + snowfall)
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error getting Copper data')
             logging.error(str(e))
             snowfall = 'error'
@@ -150,6 +157,7 @@ class ColoradoSnowReport:
             self.post_to_table('Copper',snowfall)
             logging.debug('Success posting copper to dynamodb')
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error posting to dynamodb')
             logging.error(str(e))
 
@@ -163,6 +171,7 @@ class ColoradoSnowReport:
             temp = re.search(r'\d+',temp[1].text).group()
             snowfall = temp
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error getting Winter Park data')
             logging.error(str(e))
             snowfall = 'error'
@@ -170,6 +179,7 @@ class ColoradoSnowReport:
             self.post_to_table('Winter Park',snowfall)
             logging.debug('Success posting Winter Park to DynamoDB')
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error posting to DynamoDB')
             logging.error(str(e))
 
@@ -183,6 +193,7 @@ class ColoradoSnowReport:
             temp = re.search(r'\d+',temp[1].text).group()
             snowfall = temp
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error getting Steamboat data')
             logging.error(str(e))
             snowfall = 'error'
@@ -190,6 +201,7 @@ class ColoradoSnowReport:
             self.post_to_table('Steamboat',snowfall)
             logging.debug('Success posting Steamboat to DynamoDB')
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error posting Steamboat data to DynamoDB')
             logging.error(str(e))
 
@@ -202,6 +214,7 @@ class ColoradoSnowReport:
             temp = re.search(r'\d+',temp.text).group()
             snowfall = temp
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error getting Eldora data')
             logging.error(str(e))
             snowfall = 'error'
@@ -209,6 +222,7 @@ class ColoradoSnowReport:
             self.post_to_table('Eldora',snowfall)
             logging.debug('Sucess posting Eldora to DynamoDB')
         except Exception as e:
+            logging.error(date.today().isoformat())
             logging.error('Error posting Eldora data to DynamoDB')
             logging.error(str(e))
 
