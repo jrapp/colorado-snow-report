@@ -7,6 +7,7 @@ import boto3
 import logging
 import sys
 import re
+import fileinput
 
 class ColoradoSnowReport:
     def __init__(self):
@@ -23,6 +24,12 @@ class ColoradoSnowReport:
         self.dynamodb = boto3.resource('dynamodb')
         self.table = self.dynamodb.Table('SnowReport')
         logging.debug('Sucessfully initialized SnowReport table resource')
+
+        #Get reference to S3 with boto3
+        self.s3 = boto3.resource('s3')
+
+        #Define the dictionary where the totals are stored
+        self.reports = {}
 
     def post_to_table(self, resort, reporting):
         self.table.put_item(
@@ -58,7 +65,7 @@ class ColoradoSnowReport:
             logging.error(date.today().isoformat())
             logging.error(str(e))
             logging.error('could not post data to dynamodb')
-
+        self.reports['rep-Bre'] = snowfall
         logging.debug('Posted Breckenridge data to Snow Report Table')
 
     def Keystone(self):
@@ -84,6 +91,7 @@ class ColoradoSnowReport:
             logging.error(date.today().isoformat())
             logging.error('could not post keystone data to dynamodb')
             logging.error(str(e))
+        self.reports['rep-Key'] = snowfall
         logging.debug('Success posting keystone to dynamodb')
 
     def Vail(self):
@@ -109,6 +117,7 @@ class ColoradoSnowReport:
         except Exception as e:
             logging.error('could not post vail data to dynamodb')
             logging.error(str(e))
+        self.reports['rep-Vai'] = snowfall
         logging.debug('Success posting vail to dynamodb')
 
 
@@ -136,6 +145,7 @@ class ColoradoSnowReport:
             logging.error(date.today().isoformat())
             logging.error('Error posting to dynamodb')
             logging.error(str(e))
+        self.reports['rep-Ara'] = snowfall
         logging.debug('Success posting a-basin to dynamodb')
 
     def Copper(self):
@@ -160,7 +170,7 @@ class ColoradoSnowReport:
             logging.error(date.today().isoformat())
             logging.error('Error posting to dynamodb')
             logging.error(str(e))
-
+        self.reports['rep-Cop'] = snowfall
 
     def WinterPark(self):
         snowfall = 'nr'
@@ -182,6 +192,7 @@ class ColoradoSnowReport:
             logging.error(date.today().isoformat())
             logging.error('Error posting to DynamoDB')
             logging.error(str(e))
+        self.reports['rep-Win'] = snowfall
 
 
     def Steamboat(self):
@@ -204,6 +215,7 @@ class ColoradoSnowReport:
             logging.error(date.today().isoformat())
             logging.error('Error posting Steamboat data to DynamoDB')
             logging.error(str(e))
+        self.reports['rep-Ste'] = snowfall
 
     def Eldora(self):
         snowfall = 'nr'
@@ -225,9 +237,18 @@ class ColoradoSnowReport:
             logging.error(date.today().isoformat())
             logging.error('Error posting Eldora data to DynamoDB')
             logging.error(str(e))
+        self.reports['rep-Eld'] = snowfall
 
 
+    def UpdateSite(self):
+        with open('raw.html') as infile, open('index.html','w') as outfile:
+            for line in infile:
+                for src, target in self.reports.iteritems():
+                    line = line.replace(src, target)
+                outfile.write(line)
 
+        data = open('index.html','rb')
+        self.s3.Bucket('coloradosnowreport.co').put_object(Key='index.html',Body=data, ContentType='text/html')
 
 if __name__ == "__main__":
     #Call the constructor
@@ -243,5 +264,6 @@ if __name__ == "__main__":
     csr.Eldora()
     #Close the chrome driver
     csr.driver.close()
-
+    #Update the text in the website
+    csr.UpdateSite()
 
