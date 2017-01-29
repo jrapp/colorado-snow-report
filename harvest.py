@@ -8,6 +8,7 @@ import logging
 import sys
 import re
 import fileinput
+import os
 
 class ColoradoSnowReport:
     def __init__(self):
@@ -266,4 +267,7 @@ if __name__ == "__main__":
     csr.driver.close()
     #Update the text in the website
     csr.UpdateSite()
+
+    #Remove index.html for next time
+    os.remove('index.html')
 
