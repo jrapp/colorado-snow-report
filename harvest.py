@@ -133,9 +133,12 @@ class ColoradoSnowReport:
             temp = temp.find_element_by_id('mountain-conditions')
             temp = temp.find_element_by_class_name('nine')
             temp = temp.find_elements_by_tag_name('li')
-            temp = re.search(r'\d+',temp[0].text).group()
-            logging.debug('A-Basin reported ' + temp[0])
-            snowfall = temp[0]
+            if temp[0].text[:2] == 'TR':
+                snowfall = '0'
+            else:
+                temp = re.search(r'\d+',temp[0].text).group()
+                snofall = temp[0]
+            logging.debug('A-Basin reported ' + snowfall)
         except Exception as e:
             logging.error(date.today().isoformat())
             logging.error('Error getting A-Basin data')
