@@ -1,7 +1,8 @@
 
 from pyvirtualdisplay import Display
 from selenium import webdriver
-from datetime import date
+from datetime import date, datetime
+from pytz import timezone
 import time
 import boto3
 import logging
@@ -242,6 +243,9 @@ class ColoradoSnowReport:
 
 
     def UpdateSite(self):
+        #Put in the date as well
+        timenow = datetime.now(timezone('MST'))
+        self.reports['rep-date'] = timenow.strftime("%A, %d %B %Y %I:%M%p")
         with open('raw.html') as infile, open('index.html','w') as outfile:
             for line in infile:
                 for src, target in self.reports.iteritems():
