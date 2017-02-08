@@ -124,7 +124,7 @@ class ColoradoSnowReport:
 
 
     def A_Basin(self):
-        snowfall = 'nr'
+        snowfall = 'err'
         try:
             self.driver.get('http://arapahoebasin.com/ABasin/snow-conditions/')
             temp = self.driver.find_element_by_class_name('page')
@@ -137,7 +137,7 @@ class ColoradoSnowReport:
                 snowfall = '0'
             else:
                 temp = re.search(r'\d+',temp[0].text).group()
-                snofall = temp[0]
+                snowfall = temp[0]
             logging.debug('A-Basin reported ' + snowfall)
         except Exception as e:
             logging.error(date.today().isoformat())
